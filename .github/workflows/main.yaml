@@ -1,0 +1,32 @@
+name: Deploy everything
+on:
+  push:
+    branches:
+      - main
+env:
+  CONTAINER_REGISTRY: schmelczera
+
+jobs:
+  build-error-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current branch with lfs
+        uses: actions/checkout@main
+        with:
+          lfs: true
+
+      - name: Setup auth tokens
+        run: |
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Install buildx
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v1
+        with:
+          version: latest
+
+      - name: Build and push
+        run: |
+          docker buildx build \
+          --tag $CONTAINER_REGISTRY/error-pages:latest \
+          --platform linux/amd64,linux/arm/v7,linux/arm64 . --push
