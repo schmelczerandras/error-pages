@@ -14,6 +14,10 @@ class Substitutions(NamedTuple):
 
 
 error_messages: Dict[str, Substitutions] = {
+    '401': Substitutions(
+        title='401 - Unauthorized',
+        description='You are not allowed to view this resource.'
+    ),
     '403': Substitutions(
         title='403 - Forbidden',
         description='You are not allowed to view this resource.'
